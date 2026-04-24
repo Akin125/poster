@@ -24,7 +24,6 @@ export default async function BirthdayLoginPage({ searchParams }: BirthdayLoginP
       <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 p-6 sm:p-7 shadow-2xl shadow-black/30">
         <p className="text-[11px] uppercase tracking-[0.2em] text-purple-300/70">Restricted Access</p>
         <h1 className="text-2xl font-bold tracking-tight mt-2">Birthday Creator Login</h1>
-        <p className="text-sm text-white/45 mt-2">Enter the credentials configured in your environment.</p>
 
         {hasError && (
           <p className="mt-4 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-200">
