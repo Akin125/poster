@@ -30,6 +30,9 @@ const initialState: PosterState = {
     surname: "",
     firstName: "",
     otherName: "",
+    day: "",
+    month: "",
+    classStatus: "",
   },
   background: "black",
   mainGrayscale: false,
@@ -166,7 +169,7 @@ export default function PosterBuilder({ preset }: PosterBuilderProps) {
   );
 
   const handleNameFieldChange = useCallback(
-    (field: "surname" | "firstName" | "otherName") =>
+    (field: keyof PosterState["nameFields"]) =>
       (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = field === "surname"
           ? event.target.value.toUpperCase()
@@ -186,7 +189,8 @@ export default function PosterBuilder({ preset }: PosterBuilderProps) {
   const getActiveCropAspect = (): number | undefined => {
     if (!state.activeCropSlot) return undefined;
     if (state.activeCropSlot === "main") {
-      return MAIN_PORTRAIT.width / MAIN_PORTRAIT.height;
+      const mainPlacement = preset.mainImagePlacement ?? MAIN_PORTRAIT;
+      return mainPlacement.width / mainPlacement.height;
     }
     const idx = parseInt(state.activeCropSlot.replace("float-", ""));
     const pos = preset.floatingPositions[idx];
@@ -226,7 +230,9 @@ export default function PosterBuilder({ preset }: PosterBuilderProps) {
                   onUpload={handleUpload("main")}
                   onRemove={handleRemove("main")}
                   onCrop={handleCropOpen("main")}
-                  aspectHint="Optimized for vertical frame"
+                  aspectHint={preset.mainImagePlacement
+                    ? `${preset.mainImagePlacement.width}×${preset.mainImagePlacement.height} frame`
+                    : "Optimized for vertical frame"}
                 />
 
                 {preset.enableFloaters ? (
@@ -289,15 +295,17 @@ export default function PosterBuilder({ preset }: PosterBuilderProps) {
                 </button>
               </div>
 
-              {preset.nameOverlay?.enabled && (
+              {(preset.nameOverlay?.enabled || preset.birthdayOverlay?.enabled) && (
                 <div className="mt-5 pt-5 border-t border-white/5 space-y-3">
                   <div>
                     <h3 className="text-sm font-semibold text-white/90 tracking-wide uppercase">
-                      Name on Poster
+                      Text on Poster
                     </h3>
-                    <p className="text-xs text-white/40 mt-0.5">
-                      Surname is bold. First and other names are medium.
-                    </p>
+                    {preset.nameOverlay?.enabled && (
+                      <p className="text-xs text-white/40 mt-0.5">
+                        Surname is bold. First and other names are medium.
+                      </p>
+                    )}
                   </div>
 
                   <input
@@ -323,6 +331,35 @@ export default function PosterBuilder({ preset }: PosterBuilderProps) {
                     onChange={handleNameFieldChange("otherName")}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-white/10 bg-white/5 text-sm text-white placeholder:text-white/30 outline-none focus:border-purple-400/45 focus:bg-white/10 transition-colors"
                   />
+
+                  {preset.birthdayOverlay?.enabled && (
+                    <>
+                      <div className="pt-2 border-t border-white/5" />
+                      <div className="grid grid-cols-2 gap-3">
+                        <input
+                          type="text"
+                          placeholder="Day (text)"
+                          value={state.nameFields.day}
+                          onChange={handleNameFieldChange("day")}
+                          className="w-full px-3.5 py-2.5 rounded-xl border border-white/10 bg-white/5 text-sm text-white placeholder:text-white/30 outline-none focus:border-purple-400/45 focus:bg-white/10 transition-colors"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Month (text)"
+                          value={state.nameFields.month}
+                          onChange={handleNameFieldChange("month")}
+                          className="w-full px-3.5 py-2.5 rounded-xl border border-white/10 bg-white/5 text-sm text-white placeholder:text-white/30 outline-none focus:border-purple-400/45 focus:bg-white/10 transition-colors"
+                        />
+                      </div>
+                      <input
+                        type="text"
+                        placeholder="Status in class"
+                        value={state.nameFields.classStatus}
+                        onChange={handleNameFieldChange("classStatus")}
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-white/10 bg-white/5 text-sm text-white placeholder:text-white/30 outline-none focus:border-purple-400/45 focus:bg-white/10 transition-colors"
+                      />
+                    </>
+                  )}
                 </div>
               )}
             </section>

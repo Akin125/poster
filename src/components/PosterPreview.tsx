@@ -45,6 +45,9 @@ export default function PosterPreview({ state, preset }: PosterPreviewProps) {
     state.nameFields.surname,
     state.nameFields.firstName,
     state.nameFields.otherName,
+    state.nameFields.day,
+    state.nameFields.month,
+    state.nameFields.classStatus,
     state.background,
     state.mainGrayscale,
     preset,
@@ -53,11 +56,17 @@ export default function PosterPreview({ state, preset }: PosterPreviewProps) {
   const hasAnyImage =
     state.mainImage.objectURL ||
     state.floatingImages.some((f) => f.objectURL);
+  const previewWidth = preset.canvasWidth ?? 3000;
+  const previewHeight = preset.canvasHeight ?? 3500;
+  const previewAspectStyle = `${previewWidth} / ${previewHeight}`;
 
   return (
     <div className="relative w-full flex items-center justify-center">
       {!hasAnyImage ? (
-        <div className="w-full aspect-[3000/3500] max-w-[500px] rounded-2xl border-2 border-dashed border-white/10 flex flex-col items-center justify-center gap-4 bg-white/[0.02]">
+        <div
+          className="w-full max-w-[500px] rounded-2xl border-2 border-dashed border-white/10 flex flex-col items-center justify-center gap-4 bg-white/[0.02]"
+          style={{ aspectRatio: previewAspectStyle }}
+        >
           <div className="text-6xl opacity-20">🖼</div>
           <div className="text-center">
             <p className="text-white/30 text-sm font-medium">
@@ -73,7 +82,7 @@ export default function PosterPreview({ state, preset }: PosterPreviewProps) {
           <canvas
             ref={canvasRef}
             className="w-full h-auto rounded-2xl shadow-2xl shadow-black/50"
-            style={{ aspectRatio: "3000 / 3500" }}
+              style={{ aspectRatio: previewAspectStyle }}
           />
           {rendering && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-2xl backdrop-blur-[2px]">

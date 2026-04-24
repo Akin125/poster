@@ -19,8 +19,8 @@ export default function CreatePage() {
     {
       href: "/create/birthday",
       title: "Birthday",
-      subtitle: "Campaign template",
-      status: "Coming Soon",
+      subtitle: "Campaign template (login required)",
+      status: "Protected",
       badgeClass: "bg-amber-500/15 text-amber-300 border-amber-500/30",
     },
   ];

@@ -26,8 +26,43 @@ export interface NameOverlayConfig {
   otherWeight: number;
 }
 
+export interface MainImagePlacement {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  rotationDeg?: number;
+}
+
+export interface BirthdayOverlayConfig {
+  enabled: boolean;
+  fontCssVariable: string;
+  color: string;
+  accentColor: string;
+  nameColor?: string;
+  nameX: number;
+  nameY: number;
+  statusY: number;
+  statusColor?: string;
+  dateX?: number;
+  dateY: number;
+  dateColor?: string;
+  nameFontSize: number;
+  statusFontSize: number;
+  dateFontSize: number;
+  nameWeight: number;
+  detailWeight: number;
+  surnameWeight?: number;
+  otherNameWeight?: number;
+  statusWeight?: number;
+  dayWeight?: number;
+  monthWeight?: number;
+}
+
 export interface PosterPreset {
   id: "iwd" | "white-coat-ceremony" | "birthday";
+  canvasWidth?: number;
+  canvasHeight?: number;
   title: string;
   subtitle: string;
   mainLabel: string;
@@ -36,8 +71,10 @@ export interface PosterPreset {
   enableFloaters: boolean;
   mainGrayscaleLabel: string;
   overlayPath: string;
+  mainImagePlacement?: MainImagePlacement;
   floatingPositions: [FloatingPosition, FloatingPosition, FloatingPosition];
   nameOverlay?: NameOverlayConfig;
+  birthdayOverlay?: BirthdayOverlayConfig;
   exportFilePrefix: string;
 }
 
@@ -45,6 +82,9 @@ export interface PosterNameFields {
   surname: string;
   firstName: string;
   otherName: string;
+  day: string;
+  month: string;
+  classStatus: string;
 }
 
 export interface ImageSlot {

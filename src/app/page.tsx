@@ -19,9 +19,9 @@ export default function Home() {
     },
     {
       title: "Birthday",
-      desc: "The next template in the pipeline, ready to add later.",
+      desc: "Birthday flow with framed-photo placement and celebrant text details.",
       href: "/create/birthday",
-      status: "Coming Soon",
+      status: "Ready",
       accent: "from-amber-500/20 to-orange-500/20",
     },
   ];
@@ -72,7 +72,7 @@ export default function Home() {
 
               <p className="mt-5 max-w-2xl text-base sm:text-lg text-white/45 leading-relaxed">
                 Quickly launch the right creator for International Women&apos;s Day,
-                White Coat Ceremony, or the Birthday template coming next.
+                White Coat Ceremony, or Birthday campaigns.
                 Everything stays local in your browser and exports at print-ready quality.
               </p>
 

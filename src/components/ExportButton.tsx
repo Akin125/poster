@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { PosterPreset, PosterState } from "@/lib/types";
 import { exportPoster } from "@/lib/canvas-renderer";
+import { CANVAS_H, CANVAS_W } from "@/lib/constants";
 
 interface ExportButtonProps {
   state: PosterState;
@@ -37,6 +38,8 @@ function buildExportName(state: PosterState, preset: PosterPreset): string {
 export default function ExportButton({ state, preset, disabled }: ExportButtonProps) {
   const [exporting, setExporting] = useState(false);
   const [progress, setProgress] = useState("");
+  const exportWidth = preset.canvasWidth ?? CANVAS_W;
+  const exportHeight = preset.canvasHeight ?? CANVAS_H;
 
   const handleExport = async () => {
     if (exporting || disabled) return;
@@ -89,7 +92,7 @@ export default function ExportButton({ state, preset, disabled }: ExportButtonPr
           </span>
         ) : (
           <span className="flex items-center justify-center gap-2">
-            <span>⬇</span> Download Poster (3000×3500)
+            <span>⬇</span> Download Poster ({exportWidth}x{exportHeight})
           </span>
         )}
       </button>
