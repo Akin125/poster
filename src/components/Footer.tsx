@@ -11,7 +11,7 @@ export default function Footer() {
 
   const navLinks = [
     { href: "/", label: "Home" },
-    { href: "/create", label: "Create Poster" },
+    { href: "/create", label: "Poster Portal" },
     { href: "/contact", label: "Contact" },
   ];
 
@@ -29,23 +29,23 @@ export default function Footer() {
               <div className="relative w-10 h-10">
                 <Image
                   src="/logo-white.png"
-                  alt="IWD Logo"
+                  alt="Social Committee Logo"
                   fill
                   className="object-contain drop-shadow-[0_0_8px_rgba(168,85,247,0.3)]"
                 />
               </div>
               <div>
                 <span className="text-base font-bold tracking-tight text-white">
-                  IWD <span className="text-purple-400">{currentYear}</span>
+                  Social <span className="text-purple-400">Committee</span>
                 </span>
                 <p className="text-[9px] text-white/25 -mt-0.5 tracking-[0.2em] uppercase">
-                  International Women&apos;s Day
+                  Poster Creator Portal
                 </p>
               </div>
             </Link>
             <p className="text-xs text-white/30 leading-relaxed max-w-xs">
-              Create stunning custom collage posters to celebrate the incredible
-              women in your life. Everything runs locally in your browser.
+              Build event posters for IWD, White Coat Ceremony, and upcoming
+              Birthday campaigns. Everything runs locally in your browser.
             </p>
           </div>
 
@@ -60,7 +60,7 @@ export default function Footer() {
                   <Link
                     href={link.href}
                     className={`text-sm transition-colors duration-200 ${
-                      pathname === link.href
+                      (link.href === "/create" ? pathname.startsWith("/create") : pathname === link.href)
                         ? "text-purple-400"
                         : "text-white/30 hover:text-white/60"
                     }`}
@@ -98,14 +98,14 @@ export default function Footer() {
               Get Started
             </h4>
             <p className="text-xs text-white/30 leading-relaxed mb-4">
-              Design a print-ready 3000×3500px poster in minutes. No sign-up
+              Design print-ready 3000×3500px posters for each event. No sign-up
               required.
             </p>
             <Link
               href="/create"
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold text-white bg-gradient-to-r from-purple-600 to-purple-500 shadow-lg shadow-purple-500/15 hover:shadow-purple-500/30 hover:scale-105 transition-all duration-300"
             >
-              Create Poster
+              Open Portal
               <svg
                 width="14"
                 height="14"
@@ -126,7 +126,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="py-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-[11px] text-white/20">
-            © {currentYear} IWD Poster Studio. All rights reserved.
+            © {currentYear} Social Committee Poster Portal. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
             <span className="text-[11px] text-white/15">
@@ -134,7 +134,7 @@ export default function Footer() {
             </span>
             <span className="hidden sm:inline text-white/10">·</span>
             <span className="hidden sm:inline text-[11px] text-white/15">
-              Built with ♡ for IWD
+              Built with ♡ for the Social Committee
             </span>
           </div>
         </div>

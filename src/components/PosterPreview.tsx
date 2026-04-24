@@ -1,15 +1,16 @@
 "use client";
 
 import React, { useRef, useEffect, useState } from "react";
-import { PosterState } from "@/lib/types";
+import { PosterPreset, PosterState } from "@/lib/types";
 import { renderPoster } from "@/lib/canvas-renderer";
 import { PREVIEW_SCALE } from "@/lib/constants";
 
 interface PosterPreviewProps {
   state: PosterState;
+  preset: PosterPreset;
 }
 
-export default function PosterPreview({ state }: PosterPreviewProps) {
+export default function PosterPreview({ state, preset }: PosterPreviewProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [rendering, setRendering] = useState(false);
   const renderIdRef = useRef(0);
@@ -21,7 +22,7 @@ export default function PosterPreview({ state }: PosterPreviewProps) {
     const currentId = ++renderIdRef.current;
     setRendering(true);
 
-    renderPoster(canvas, state, PREVIEW_SCALE)
+    renderPoster(canvas, state, preset, PREVIEW_SCALE)
       .then(() => {
         if (currentId === renderIdRef.current) {
           setRendering(false);
@@ -41,8 +42,12 @@ export default function PosterPreview({ state }: PosterPreviewProps) {
     state.floatingImages[1].croppedURL,
     state.floatingImages[2].objectURL,
     state.floatingImages[2].croppedURL,
+    state.nameFields.surname,
+    state.nameFields.firstName,
+    state.nameFields.otherName,
     state.background,
     state.mainGrayscale,
+    preset,
   ]);
 
   const hasAnyImage =

@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useReducer, useCallback } from "react";
-import { PosterState, PosterAction, ImageSlot } from "@/lib/types";
-import { FLOATING_POSITIONS, MAIN_PORTRAIT } from "@/lib/constants";
+import { PosterState, PosterAction, ImageSlot, PosterPreset } from "@/lib/types";
+import { MAIN_PORTRAIT } from "@/lib/constants";
 import ImageUploader from "./ImageUploader";
 import ImageCropper from "./ImageCropper";
 import PosterPreview from "./PosterPreview";
@@ -26,6 +26,11 @@ const initialState: PosterState = {
     createEmptySlot("float-1", true),
     createEmptySlot("float-2", true),
   ],
+  nameFields: {
+    surname: "",
+    firstName: "",
+    otherName: "",
+  },
   background: "black",
   mainGrayscale: false,
   activeCropSlot: null,
@@ -95,6 +100,15 @@ function posterReducer(state: PosterState, action: PosterAction): PosterState {
       return { ...state, floatingImages: newFloating, activeCropSlot: null };
     }
 
+    case "SET_NAME_FIELD":
+      return {
+        ...state,
+        nameFields: {
+          ...state.nameFields,
+          [action.field]: action.value,
+        },
+      };
+
 
     case "TOGGLE_MAIN_GRAYSCALE":
       return { ...state, mainGrayscale: !state.mainGrayscale };
@@ -110,7 +124,11 @@ function posterReducer(state: PosterState, action: PosterAction): PosterState {
   }
 }
 
-export default function PosterBuilder() {
+interface PosterBuilderProps {
+  preset: PosterPreset;
+}
+
+export default function PosterBuilder({ preset }: PosterBuilderProps) {
   const [state, dispatch] = useReducer(posterReducer, initialState);
 
   const handleUpload = useCallback(
@@ -147,6 +165,17 @@ export default function PosterBuilder() {
     []
   );
 
+  const handleNameFieldChange = useCallback(
+    (field: "surname" | "firstName" | "otherName") =>
+      (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = field === "surname"
+          ? event.target.value.toUpperCase()
+          : event.target.value;
+        dispatch({ type: "SET_NAME_FIELD", field, value });
+      },
+    []
+  );
+
   const getActiveCropSrc = (): string | null => {
     if (!state.activeCropSlot) return null;
     if (state.activeCropSlot === "main") return state.mainImage.objectURL;
@@ -160,7 +189,7 @@ export default function PosterBuilder() {
       return MAIN_PORTRAIT.width / MAIN_PORTRAIT.height;
     }
     const idx = parseInt(state.activeCropSlot.replace("float-", ""));
-    const pos = FLOATING_POSITIONS[idx];
+    const pos = preset.floatingPositions[idx];
     return pos ? pos.width / pos.height : undefined;
   };
 
@@ -174,6 +203,11 @@ export default function PosterBuilder() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 lg:py-10">
+        <div className="mb-6 lg:mb-8">
+          <p className="text-[11px] uppercase tracking-[0.2em] text-purple-300/70">Social Committee Portal</p>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{preset.title}</h1>
+          <p className="text-sm text-white/40 mt-1">{preset.subtitle}</p>
+        </div>
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
           {/* Left: Controls */}
           <div className="w-full lg:w-[380px] xl:w-[420px] flex-shrink-0 space-y-6">
@@ -186,8 +220,8 @@ export default function PosterBuilder() {
 
               <div className="space-y-4">
                 <ImageUploader
-                  label="Main Portrait"
-                  sublabel="Central focus • Full color"
+                  label={preset.mainLabel}
+                  sublabel={preset.mainSublabel}
                   imageURL={state.mainImage.croppedURL || state.mainImage.objectURL}
                   onUpload={handleUpload("main")}
                   onRemove={handleRemove("main")}
@@ -195,27 +229,33 @@ export default function PosterBuilder() {
                   aspectHint="Optimized for vertical frame"
                 />
 
-                <div className="pt-2 border-t border-white/5">
-                  <p className="text-xs text-white/30 mb-3 flex items-center gap-1.5">
-                    <span className="inline-block w-2 h-2 rounded-full bg-white/20" />
-                    Floating Images — auto-converted to B&W
-                  </p>
-                  <div className="space-y-3">
-                    {state.floatingImages.map((slot, i) => (
-                      <ImageUploader
-                        key={slot.id}
-                        label={`Floating ${i + 1}`}
-                        sublabel={FLOATING_POSITIONS[i].label}
-                        imageURL={slot.croppedURL || slot.objectURL}
-                        onUpload={handleUpload(`float-${i}`)}
-                        onRemove={handleRemove(`float-${i}`)}
-                        onCrop={handleCropOpen(`float-${i}`)}
-                        isGrayscale={true}
-                        aspectHint={`${FLOATING_POSITIONS[i].width}×${FLOATING_POSITIONS[i].height}`}
-                      />
-                    ))}
+                {preset.enableFloaters ? (
+                  <div className="pt-2 border-t border-white/5">
+                    <p className="text-xs text-white/30 mb-3 flex items-center gap-1.5">
+                      <span className="inline-block w-2 h-2 rounded-full bg-white/20" />
+                      {preset.floatingSectionLabel}
+                    </p>
+                    <div className="space-y-3">
+                      {state.floatingImages.map((slot, i) => (
+                        <ImageUploader
+                          key={slot.id}
+                          label={`Floating ${i + 1}`}
+                          sublabel={preset.floatingPositions[i].label}
+                          imageURL={slot.croppedURL || slot.objectURL}
+                          onUpload={handleUpload(`float-${i}`)}
+                          onRemove={handleRemove(`float-${i}`)}
+                          onCrop={handleCropOpen(`float-${i}`)}
+                          isGrayscale={true}
+                          aspectHint={`${preset.floatingPositions[i].width}×${preset.floatingPositions[i].height}`}
+                        />
+                      ))}
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="pt-2 border-t border-white/5">
+                    <p className="text-xs text-white/35">{preset.floatingSectionLabel}</p>
+                  </div>
+                )}
               </div>
             </section>
 
@@ -229,7 +269,7 @@ export default function PosterBuilder() {
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-sm font-semibold text-white/90 tracking-wide uppercase">
-                    Main Portrait B&W
+                    {preset.mainGrayscaleLabel}
                   </h3>
                   <p className="text-xs text-white/40 mt-0.5">
                     Convert main portrait to grayscale
@@ -248,6 +288,43 @@ export default function PosterBuilder() {
                   />
                 </button>
               </div>
+
+              {preset.nameOverlay?.enabled && (
+                <div className="mt-5 pt-5 border-t border-white/5 space-y-3">
+                  <div>
+                    <h3 className="text-sm font-semibold text-white/90 tracking-wide uppercase">
+                      Name on Poster
+                    </h3>
+                    <p className="text-xs text-white/40 mt-0.5">
+                      Surname is bold. First and other names are medium.
+                    </p>
+                  </div>
+
+                  <input
+                    type="text"
+                    placeholder="Surname"
+                    value={state.nameFields.surname}
+                    onChange={handleNameFieldChange("surname")}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-white/10 bg-white/5 text-sm text-white placeholder:text-white/30 outline-none focus:border-purple-400/45 focus:bg-white/10 transition-colors"
+                  />
+
+                  <input
+                    type="text"
+                    placeholder="First name"
+                    value={state.nameFields.firstName}
+                    onChange={handleNameFieldChange("firstName")}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-white/10 bg-white/5 text-sm text-white placeholder:text-white/30 outline-none focus:border-purple-400/45 focus:bg-white/10 transition-colors"
+                  />
+
+                  <input
+                    type="text"
+                    placeholder="Other name (optional)"
+                    value={state.nameFields.otherName}
+                    onChange={handleNameFieldChange("otherName")}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-white/10 bg-white/5 text-sm text-white placeholder:text-white/30 outline-none focus:border-purple-400/45 focus:bg-white/10 transition-colors"
+                  />
+                </div>
+              )}
             </section>
 
             {/* Step 3: Export */}
@@ -257,7 +334,7 @@ export default function PosterBuilder() {
                 <h2 className="text-sm font-semibold tracking-wide text-white/80">Export</h2>
               </div>
 
-              <ExportButton state={state} disabled={!hasMainImage} />
+              <ExportButton state={state} preset={preset} disabled={!hasMainImage} />
 
               {!hasMainImage && (
                 <p className="text-xs text-white/25 text-center mt-2">
@@ -277,7 +354,7 @@ export default function PosterBuilder() {
                 SCALED PREVIEW • EXPORT AT FULL RES
               </span>
             </div>
-            <PosterPreview state={state} />
+            <PosterPreview state={state} preset={preset} />
           </div>
         </div>
       </main>

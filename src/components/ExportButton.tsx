@@ -1,15 +1,40 @@
 "use client";
 
 import React, { useState } from "react";
-import { PosterState } from "@/lib/types";
+import { PosterPreset, PosterState } from "@/lib/types";
 import { exportPoster } from "@/lib/canvas-renderer";
 
 interface ExportButtonProps {
   state: PosterState;
+  preset: PosterPreset;
   disabled?: boolean;
 }
 
-export default function ExportButton({ state, disabled }: ExportButtonProps) {
+function sanitizeFilenamePart(value: string): string {
+  return value
+    .trim()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[<>:"/\\|?*\x00-\x1F]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/[^a-zA-Z0-9-_]/g, "")
+    .replace(/-+/g, "-")
+    .replace(/^[-_. ]+|[-_. ]+$/g, "");
+}
+
+function buildExportName(state: PosterState, preset: PosterPreset): string {
+  const nameParts = [state.nameFields.surname, state.nameFields.firstName, state.nameFields.otherName]
+    .map(sanitizeFilenamePart)
+    .filter(Boolean);
+
+  if (nameParts.length === 0) {
+    return preset.exportFilePrefix;
+  }
+
+  return `${preset.exportFilePrefix}-${nameParts.join("-")}`;
+}
+
+export default function ExportButton({ state, preset, disabled }: ExportButtonProps) {
   const [exporting, setExporting] = useState(false);
   const [progress, setProgress] = useState("");
 
@@ -20,14 +45,14 @@ export default function ExportButton({ state, disabled }: ExportButtonProps) {
     setProgress("Compositing layers...");
 
     try {
-      const blob = await exportPoster(state);
+      const blob = await exportPoster(state, preset);
       setProgress("Preparing download...");
 
       const url = URL.createObjectURL(blob);
-      const timestamp = new Date().toISOString().slice(0, 19).replace(/[:-]/g, "");
+      const exportName = buildExportName(state, preset);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `custom-poster-${timestamp}.png`;
+      a.download = `${exportName}.png`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);

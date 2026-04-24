@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import { Space_Grotesk, JetBrains_Mono, Funnel_Display } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -16,10 +16,16 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ["400", "500"],
 });
 
+const funnelDisplay = Funnel_Display({
+  variable: "--font-funnel",
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+});
+
 export const metadata: Metadata = {
-  title: "IWD 2026 — Poster Studio",
+  title: "Social Committee Portal — Poster Studio",
   description:
-    "Create stunning custom collage posters for International Women's Day 2026. Upload, crop, and design high-resolution posters.",
+    "Create high-resolution posters for IWD, White Coat Ceremony, and other social committee campaigns.",
 };
 
 export default function RootLayout({
@@ -30,7 +36,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} antialiased`}
+        className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} ${funnelDisplay.variable} antialiased`}
       >
         <Navbar />
         {children}

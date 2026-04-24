@@ -27,7 +27,7 @@ const links = [
 	},
 	{
 		href: "/create",
-		label: "Create Poster",
+		label: "Poster Portal",
 		icon: (
 			<svg
 				width="18"
@@ -109,17 +109,17 @@ export default function Navbar() {
 							<div className="relative w-9 h-9 sm:w-11 sm:h-11">
 								<Image
 									src="/logo-white.png"
-									alt="IWD Logo"
+									alt="Social Committee Logo"
 									fill
 									className="object-contain drop-shadow-[0_0_12px_rgba(168,85,247,0.4)] group-hover:drop-shadow-[0_0_20px_rgba(168,85,247,0.6)] transition-all duration-500"
 								/>
 							</div>
 							<div>
 								<span className="text-base sm:text-lg font-bold tracking-tight text-white">
-									IWD <span className="text-purple-400">2026</span>
+									Social <span className="text-purple-400">Committee</span>
 								</span>
 								<p className="hidden sm:block text-[9px] text-white/30 -mt-0.5 tracking-[0.25em] uppercase">
-									International Women&apos;s Day
+									Poster Creator Portal
 								</p>
 							</div>
 						</Link>
@@ -127,7 +127,10 @@ export default function Navbar() {
 						{/* Desktop Nav */}
 						<nav className="hidden md:flex items-center gap-1">
 							{links.map((link) => {
-								const isActive = pathname === link.href;
+											const isActive =
+												link.href === "/create"
+													? pathname.startsWith("/create")
+													: pathname === link.href;
 								return (
 									<Link
 										key={link.href}
@@ -153,7 +156,7 @@ export default function Navbar() {
 								href="/create"
 								className="px-5 py-2.5 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40 transition-all duration-300 hover:scale-105"
 							>
-								Create Poster →
+								Open Portal →
 							</Link>
 						</div>
 
@@ -206,7 +209,10 @@ export default function Navbar() {
 				{/* Nav links */}
 				<nav className="flex-1 px-5 pt-6 pb-4 space-y-1.5 overflow-y-auto">
 					{links.map((link, i) => {
-						const isActive = pathname === link.href;
+						const isActive =
+							link.href === "/create"
+								? pathname.startsWith("/create")
+								: pathname === link.href;
 						return (
 							<Link
 								key={link.href}
@@ -242,7 +248,7 @@ export default function Navbar() {
 						href="/create"
 						className="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl text-sm font-semibold text-white bg-gradient-to-r from-purple-600 to-purple-500 shadow-lg shadow-purple-500/20"
 					>
-						Create Poster
+						Open Portal
 						<svg
 							width="16"
 							height="16"
@@ -259,7 +265,7 @@ export default function Navbar() {
 					</Link>
 					<div className="flex items-center justify-center gap-2 text-[11px] text-white/20">
 						<span className="w-1.5 h-1.5 rounded-full bg-purple-500/40" />
-						IWD 2026 — International Women&apos;s Day
+						IWD · White Coat · Birthday
 					</div>
 				</div>
 			</div>
