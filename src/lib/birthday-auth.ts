@@ -2,7 +2,7 @@ import { createHmac, timingSafeEqual } from "crypto";
 import { cookies } from "next/headers";
 
 const COOKIE_NAME = "birthday_auth";
-const SESSION_TTL_SECONDS = 60 * 60 * 12;
+const SESSION_TTL_SECONDS = 60 * 60;
 
 function getEnvValue(name: string): string {
   return process.env[name]?.trim() ?? "";
